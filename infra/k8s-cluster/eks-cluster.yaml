@@ -1,0 +1,11 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: rts-cluster
+  region: us-west-2
+
+nodeGroups:
+  - name: rts-general-purpose
+    instanceType: t3.medium
+    desiredCapacity: 2
