@@ -1,5 +1,5 @@
 resource "aws_instance" "master" {
-  count                  = 1
+  count                  = var.number_of_masters
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.small"
   key_name               = var.ssh_key_name
