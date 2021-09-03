@@ -1,10 +1,11 @@
 resource "aws_instance" "master" {
   count                  = var.number_of_masters
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.small"
+  instance_type          = var.master_instance_type
   key_name               = var.ssh_key_name
   subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
   vpc_security_group_ids = [aws_security_group.master_sg.id]
+  user_data              = file("./userdata-master.sh")
 
   tags = {
     Name = "K8s manual - control plane ${count.index}"

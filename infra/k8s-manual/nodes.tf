@@ -1,10 +1,11 @@
 resource "aws_instance" "node" {
   count                  = var.number_of_nodes
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.micro"
+  instance_type          = var.node_instance_type
   key_name               = var.ssh_key_name
   subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
   vpc_security_group_ids = [aws_security_group.node_sg.id]
+  user_data              = file("./userdata-nodes.sh")
 
   tags = {
     Name = "K8s manual - node ${count.index}"
