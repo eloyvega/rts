@@ -59,10 +59,10 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 wget https://docs.projectcalico.org/manifests/calico.yaml
 kubectl apply -f calico.yaml
 
+############ Kubeconfig for Ubuntu user ############
+mkdir -p /home/ubuntu/.kube
+cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+chown -R ubuntu:ubuntu /home/ubuntu/.kube
+
 # To get join token
 # kubeadm token create --print-join-command
-
-# To move kubectl
-# mkdir -p $HOME/.kube
-# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-# sudo chown $(id -u):$(id -g) $HOME/.kube/config
