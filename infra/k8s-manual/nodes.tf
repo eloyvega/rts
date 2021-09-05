@@ -18,18 +18,17 @@ resource "aws_security_group" "node_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description      = "SSH from anywhere"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    description = "All traffic inside VPC"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.1.0.0/16"]
   }
 
   ingress {
-    description      = "Kubelet"
-    from_port        = 10250
-    to_port          = 10250
+    description      = "SSH from anywhere"
+    from_port        = 22
+    to_port          = 22
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
@@ -43,6 +42,15 @@ resource "aws_security_group" "node_sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+  # ingress {
+  #   description      = "Kubelet"
+  #   from_port        = 10250
+  #   to_port          = 10250
+  #   protocol         = "tcp"
+  #   cidr_blocks      = ["0.0.0.0/0"]
+  #   ipv6_cidr_blocks = ["::/0"]
+  # }
 
   egress {
     from_port        = 0
