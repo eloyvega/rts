@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+  annotations:
+    deploymentTool: "This was created by Jenkins on 2020/12/23"
+  labels:
+    app: backend
+    type: flask
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+      type: flask
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: backend
+        type: flask
+        version: v1
+    spec:
+      containers:
+        - image: public.ecr.aws/v1d1a0v9/flask-simple:latest
+          name: flask
+          imagePullPolicy: Always
