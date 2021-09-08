@@ -27,6 +27,24 @@ resource "aws_autoscaling_group" "nodes" {
   }
 }
 
+resource "aws_autoscaling_schedule" "scale_down" {
+  autoscaling_group_name = aws_autoscaling_group.nodes.name
+  scheduled_action_name  = "scale_down"
+  min_size               = 0
+  max_size               = 0
+  desired_capacity       = 0
+  recurrence             = "0 3 * * *"
+}
+
+resource "aws_autoscaling_schedule" "scale_up" {
+  autoscaling_group_name = aws_autoscaling_group.nodes.name
+  scheduled_action_name  = "scale_up"
+  min_size               = var.number_of_nodes
+  max_size               = var.number_of_nodes
+  desired_capacity       = var.number_of_nodes
+  recurrence             = "0 12 * * *"
+}
+
 resource "aws_security_group" "node_sg" {
   name        = "node_sg"
   description = "Allow traffic for nodes"

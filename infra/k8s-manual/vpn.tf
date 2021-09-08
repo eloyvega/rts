@@ -1,12 +1,12 @@
 resource "aws_instance" "vpn" {
-  count                       = var.enable_vpn == true ? 1 : 0
-  ami                         = data.aws_ami.amazon_linux_2.id
-  instance_type               = "t3.micro"
-  key_name                    = var.ssh_key_name
-  source_dest_check           = false
-  user_data                   = file("${path.module}/userdata-vpn.sh")
-  vpc_security_group_ids      = [aws_security_group.vpn_sg[0].id]
-  subnet_id                   = module.vpc.public_subnets[0]
+  count                  = var.enable_vpn == true ? 1 : 0
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = "t3.micro"
+  key_name               = var.ssh_key_name
+  source_dest_check      = false
+  user_data              = file("${path.module}/userdata-vpn.sh")
+  vpc_security_group_ids = [aws_security_group.vpn_sg[0].id]
+  subnet_id              = module.vpc.public_subnets[0]
 
   tags = {
     "Name" = "K8s VPN"
