@@ -1,7 +1,6 @@
 resource "aws_instance" "vpn" {
   count                       = var.enable_vpn == true ? 1 : 0
   ami                         = data.aws_ami.amazon_linux_2.id
-  associate_public_ip_address = false
   instance_type               = "t3.micro"
   key_name                    = var.ssh_key_name
   source_dest_check           = false
@@ -22,8 +21,8 @@ resource "aws_security_group" "vpn_sg" {
 
   ingress {
     description      = "UDP traffic"
-    from_port        = 12692
-    to_port          = 12692
+    from_port        = 1025
+    to_port          = 65535
     protocol         = "udp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
@@ -74,7 +73,7 @@ resource "aws_eip" "eip" {
 }
 
 output "ssh_connect_vpn" {
-  value = [for i in aws_instance.vpn : "ssh -i ${i.key_name}.pem ec2-user@${aws_eip.eip[0].public_ip}"]
+  value = "ssh -i ${aws_instance.vpn[0].key_name}.pem ec2-user@${aws_eip.eip[0].public_ip}"
 }
 
 # Configuration after the installation (manual):

@@ -1,14 +1,14 @@
 resource "aws_instance" "master" {
-  count                  = var.number_of_masters
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.master_instance_type
   key_name               = var.ssh_key_name
-  subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
+  subnet_id              = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.master_sg.id]
-  user_data              = file("./userdata-master.sh")
+  user_data              = templatefile("./userdata-master.sh", { bucket = aws_s3_bucket.kubeadm_bucket.id })
+  iam_instance_profile   = aws_iam_instance_profile.k8s_instance_profile.id
 
   tags = {
-    Name = "K8s manual - control plane ${count.index}"
+    Name = "K8s manual - Control Plane"
   }
 }
 
@@ -62,5 +62,5 @@ resource "aws_security_group" "master_sg" {
 }
 
 output "ssh_connect_master" {
-  value = [for i in aws_instance.master : "ssh -i ${i.key_name}.pem ubuntu@${i.public_ip}"]
+  value = "ssh -i ${aws_instance.master.key_name}.pem ubuntu@${aws_instance.master.public_ip}"
 }

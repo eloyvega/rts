@@ -2,6 +2,13 @@
 
 set -xe
 
+##################### INSTALL AWSCLI #####################
+apt-get update -y
+apt-get install -y unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+
 ##################### ALL-CONTAINERD #####################
 modprobe overlay
 modprobe br_netfilter
@@ -34,3 +41,8 @@ apt-get install -y kubelet=$VERSION kubeadm=$VERSION kubectl=$VERSION
 apt-mark hold kubelet kubeadm kubectl containerd
 systemctl enable kubelet.service
 systemctl enable containerd.service
+
+####### Download and execute kubeadm join #######
+aws s3 cp s3://${bucket}/kubeadm-join.sh kubeadm-join.sh
+chmod +x kubeadm-join.sh
+./kubeadm-join.sh

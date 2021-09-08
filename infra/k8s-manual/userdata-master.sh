@@ -2,6 +2,13 @@
 
 set -xe
 
+##################### INSTALL AWSCLI #####################
+apt-get update -y
+apt-get install -y unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+
 ##################### ALL-CONTAINERD #####################
 modprobe overlay
 modprobe br_netfilter
@@ -38,9 +45,9 @@ systemctl enable containerd.service
 ############ CLUSTER CONFIGURATION ############
 kubeadm config print init-defaults | tee ClusterConfiguration.yaml
 LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-sed -i "s/  advertiseAddress: 1.2.3.4/  advertiseAddress: ${LOCAL_IP}/" ClusterConfiguration.yaml
+sed -i "s/  advertiseAddress: 1.2.3.4/  advertiseAddress: $LOCAL_IP/" ClusterConfiguration.yaml
 sed -i 's/  criSocket: \/var\/run\/dockershim\.sock/  criSocket: \/run\/containerd\/containerd\.sock/' ClusterConfiguration.yaml
-sed -i "s/  name: node/  name: ${HOSTNAME}/" ClusterConfiguration.yaml
+sed -i "s/  name: node/  name: $HOSTNAME/" ClusterConfiguration.yaml
 sed -i 's/\(kubernetesVersion:\s*\).*$/\11.21.0/' ClusterConfiguration.yaml
 cat <<EOF | cat >> ClusterConfiguration.yaml
 ---
@@ -63,6 +70,12 @@ kubectl apply -f calico.yaml
 mkdir -p /home/ubuntu/.kube
 cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown -R ubuntu:ubuntu /home/ubuntu/.kube
+
+############# Write join command and kubeconfig to s3 ############
+echo "#!/bin/bash" > kubeadm-join.sh
+echo $(kubeadm token create --print-join-command) >> kubeadm-join.sh
+aws s3 cp kubeadm-join.sh s3://${bucket}/kubeadm-join.sh
+aws s3 cp /etc/kubernetes/admin.conf s3://${bucket}/config
 
 # To get join token
 # kubeadm token create --print-join-command
