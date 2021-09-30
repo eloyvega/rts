@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Zodiac Fortune</title>
+  </head>
+  <body>
+    <h1>Zodiac Fortune</h1>
+    <div>
+      <form action="" method="post">
+        <label for="fname">Your name:</label><br />
+        <input type="text" id="fname" name="fname" /><br />
+        <label for="signs">Choose your astrological sign:</label><br />
+        <select id="signs" name="signs">
+          {% for sign in signs %}
+          <option value="{{sign.lower()}}">{{sign}}</option>
+          {% endfor %}
+        </select>
+        <br /><br />
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    {% if content %}
+    <h2>Your fortune for today:</h2>
+    <div>
+      <div>
+        Lucky numbers:
+        <ul>
+          {% for number in content.lucky_numbers %}
+          <li>{{number}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        How are you going to do today in...
+        <ul>
+          <li><b>Love:</b> {{content.fortunes.love}}</li>
+          <li><b>Money:</b> {{content.fortunes.money}}</li>
+          <li><b>Work:</b> {{content.fortunes.work}}</li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </body>
+</html>
