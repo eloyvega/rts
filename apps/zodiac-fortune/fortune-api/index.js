@@ -1,6 +1,9 @@
 const express = require("express");
+const os = require("os");
+const packageInfo = require("./package.json");
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -8,30 +11,39 @@ app.use(express.urlencoded({ extended: true }));
 const categories = ["love", "money", "work"];
 const values = ["Great", "Good", "Meh...", "Not so good", "Watch out!"];
 
+// Endpoint for health check
 app.get("/", (req, res) => {
   res.send("Healthy");
 });
 
-app.post("/get-fortune", (req, res) => {
-  const name = req.body.name || "default";
-  const sign = req.body.sign;
-
-  const lucky_numbers = getLuckyNumbers(name, sign);
-  const fortunes = getFortunes(name, sign);
+// Get fortune data
+app.post("/api/get-fortune", (req, res) => {
+  const lucky_numbers = getLuckyNumbers(req.body);
+  const fortunes = getFortunes(req.body);
 
   const response = {
-    lucky_numbers,
-    fortunes,
+    metadata: [
+      {
+        name: packageInfo.name,
+        version: packageInfo.version,
+        os_arch: os.arch(),
+        lang: "NodeJS",
+      },
+    ],
+    data: {
+      lucky_numbers,
+      fortunes,
+    },
   };
 
   res.send(response);
 });
 
-const getLuckyNumbers = (name, sign) => {
-  return Array.from({ length: 6 }, () => Math.floor(Math.random() * 100));
+const getLuckyNumbers = ({ name = "default", sign }) => {
+  return Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
 };
 
-const getFortunes = (name, sign) => {
+const getFortunes = ({ name = "default", sign }) => {
   const fortunes = {};
   for (category of categories) {
     fortunes[category] = values[Math.floor(Math.random() * values.length)];

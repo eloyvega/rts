@@ -1,30 +1,45 @@
 <html>
   <head>
     <title>Zodiac Fortune</title>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+    </style>
   </head>
   <body>
     <h1>Zodiac Fortune</h1>
+
     <div>
-      <form action="" method="post">
+      <form action="{{ url_for('get_fortune') }}" method="post">
         <label for="fname">Your name:</label><br />
         <input type="text" id="fname" name="fname" /><br />
         <label for="signs">Choose your astrological sign:</label><br />
         <select id="signs" name="signs">
           {% for sign in signs %}
-          <option value="{{sign.lower()}}">{{sign}}</option>
+          <option value="{{ sign.lower() }}">{{sign}}</option>
           {% endfor %}
         </select>
         <br /><br />
         <input type="submit" value="Submit" />
       </form>
     </div>
-    {% if content %}
+
+    {% if data %}
     <h2>Your fortune for today:</h2>
     <div>
       <div>
         Lucky numbers:
         <ul>
-          {% for number in content.lucky_numbers %}
+          {% for number in data.lucky_numbers %}
           <li>{{number}}</li>
           {% endfor %}
         </ul>
@@ -32,12 +47,37 @@
       <div>
         How are you going to do today in...
         <ul>
-          <li><b>Love:</b> {{content.fortunes.love}}</li>
-          <li><b>Money:</b> {{content.fortunes.money}}</li>
-          <li><b>Work:</b> {{content.fortunes.work}}</li>
+          <li><b>Love:</b> {{data.fortunes.love}}</li>
+          <li><b>Money:</b> {{data.fortunes.money}}</li>
+          <li><b>Work:</b> {{data.fortunes.work}}</li>
         </ul>
       </div>
     </div>
     {% endif %}
+    <br />
+
+    {% if metadata %}
+    <h3>Services info</h3>
+    <table style="border-collapse: collapse; width: 50%">
+      <tr>
+        <th>Name</th>
+        <th>Version</th>
+        <th>Arch</th>
+        <th>Language</th>
+      </tr>
+      {% for svc in metadata %}
+      <tr>
+        <td>{{ svc['name'] }}</td>
+        <td>{{ svc['version'] }}</td>
+        <td>{{ svc['os_arch'] }}</td>
+        <td>{{ svc['lang'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+
+    <div style="position: absolute; bottom: 0; right: 0; margin: 10">
+      {{version}}
+    </div>
   </body>
 </html>
