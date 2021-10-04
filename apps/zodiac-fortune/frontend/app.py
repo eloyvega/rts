@@ -10,7 +10,7 @@ app.secret_key = "secret"
 fortune_api = os.getenv("FORTUNE_API")
 
 
-@app.route("/", methods=["get"])
+@app.route("/", methods=["get", "post"])
 def index():
     content = session.get("content", None)
     data = {}
