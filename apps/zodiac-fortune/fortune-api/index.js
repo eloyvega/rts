@@ -1,8 +1,10 @@
 const express = require("express");
+var morgan = require('morgan')
 const os = require("os");
 const packageInfo = require("./package.json");
 
 const app = express();
+app.use(morgan('combined'))
 const port = process.env.PORT || 3000;
 
 app.use(express.json());

@@ -1,6 +1,7 @@
 # Not for production use
 FROM node:14.18-alpine
-EXPOSE 3000
+ENV PORT 80
+EXPOSE ${PORT}
 WORKDIR /app
 COPY . .
 RUN npm install
