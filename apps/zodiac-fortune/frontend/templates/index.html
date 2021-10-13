@@ -63,6 +63,7 @@
         <th>Name</th>
         <th>Version</th>
         <th>Arch</th>
+        <th>Hostname</th>
         <th>Language</th>
       </tr>
       {% for svc in metadata %}
@@ -70,6 +71,7 @@
         <td>{{ svc['name'] }}</td>
         <td>{{ svc['version'] }}</td>
         <td>{{ svc['os_arch'] }}</td>
+        <td>{{ svc['hostname'] }}</td>
         <td>{{ svc['lang'] }}</td>
       </tr>
       {% endfor %}
