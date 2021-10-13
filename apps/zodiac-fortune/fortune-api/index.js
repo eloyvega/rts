@@ -29,6 +29,7 @@ app.post("/api/get-fortune", (req, res) => {
         name: packageInfo.name,
         version: packageInfo.version,
         os_arch: os.arch(),
+        hostname: os.hostname(),
         lang: "NodeJS",
       },
     ],
